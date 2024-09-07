@@ -217,7 +217,8 @@ def _generate_landline_phone():  # type () -> str
 
 
 def return_region_from_ddd(phone_number: str):
-    if is_valid(phone_number) != True:
+    # if is_valid(phone_number) != True:
+    if not is_valid(phone_number):
         return None
 
     with open(DDDS_FILE) as file:
@@ -225,7 +226,7 @@ def return_region_from_ddd(phone_number: str):
 
     ddd = phone_number[:2]
     region = ddds.get(ddd)
-    if region == None:
+    if region is None:
         return "DDD não existe"
 
     return f"{region}"
