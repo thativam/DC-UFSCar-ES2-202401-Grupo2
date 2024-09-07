@@ -1,11 +1,12 @@
-import re
 import json
 import os
+import re
 from random import choice, randint
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = f"{ROOT_DIR}/data"
 DDDS_FILE = f"{DATA_DIR}/dddBrasil.json"
+
 
 # FORMATTING
 ############
@@ -214,16 +215,17 @@ def _generate_landline_phone():  # type () -> str
     ddd = _generate_ddd_number()
     return f"{ddd}{randint(2,5)}{str(randint(0,9999999)).zfill(7)}"
 
+
 def return_region_from_ddd(phone_number: str):
-    if(is_valid(phone_number) != True):
+    if is_valid(phone_number) != True:
         return None
 
     with open(DDDS_FILE) as file:
         ddds = json.load(file)
 
-    ddd = phone_number[:2]  
+    ddd = phone_number[:2]
     region = ddds.get(ddd)
     if region == None:
-        return f"DDD não existe"
-    
+        return "DDD não existe"
+
     return f"{region}"

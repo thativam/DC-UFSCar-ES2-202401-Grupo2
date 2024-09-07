@@ -1,4 +1,4 @@
-from selenium import webdriver
+"""from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -44,7 +44,7 @@ def find_voter(voter_id_value):
             EC.presence_of_element_located((By.XPATH, '/html/body/main/div/div/div[3]/div/div/app-root/app-modal-auth/div/div/div/div/div[2]/div[2]/form/div[1]/div/input'))
         )
         Botao_verificacao = driver.find_element(By.XPATH, '/html/body/main/div/div/div[3]/div/div/app-root/app-modal-auth/div/div/div/div/div[2]/div[2]/form/div[2]/button[2]')
-        
+
         Numero_eleitor.send_keys(voter_id_value)
         Botao_verificacao.click()
     except Exception as e:
@@ -66,3 +66,4 @@ def find_voter(voter_id_value):
 
     # Fechar o navegador
     driver.quit()
+"""
