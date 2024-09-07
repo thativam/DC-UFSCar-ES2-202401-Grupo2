@@ -349,6 +349,7 @@ def find_voter(voter_id_value):
 
         # Aguardar o campo de número do eleitor aparecer e preenchê-lo
         try:
+            time.sleep(3)
             Numero_eleitor = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (
@@ -361,9 +362,10 @@ def find_voter(voter_id_value):
                 By.XPATH,
                 "/html/body/main/div/div/div[3]/div/div/app-root/app-modal-auth/div/div/div/div/div[2]/div[2]/form/div[2]/button[2]",
             )
-
+            time.sleep(3)
             Numero_eleitor.send_keys(voter_id_value)
             Botao_verificacao.click()
+            time.sleep(3)
         except Exception:
             # print("Erro ao preencher o número do eleitor ou clicar no botão de verificação:", str(e))
             return "IRREGULAR"
