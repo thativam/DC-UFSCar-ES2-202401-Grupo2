@@ -1,4 +1,4 @@
-#printf "Running pre-push hook checks\n\n"
+printf "Running pre-push hook checks\n\n"
 
 #make check
 

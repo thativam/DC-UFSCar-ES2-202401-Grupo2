@@ -322,19 +322,21 @@ def find_voter(voter_id_value):
 
         # Fechar o modal de cookies
         try:
+            time.sleep(10)
             cookie = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable(
                     (By.XPATH, "/html/body/div[9]/div/div/div[2]/button")
                 )
             )
+            time.sleep(10)
             cookie.click()
         except Exception:
-            # print("Erro ao fechar o modal de cookies:", str(e))
             return "IRREGULAR"
 
         # Clicar no botão 'Consultar situação eleitoral'
         try:
-            Titulo = WebDriverWait(driver, 10).until(
+            time.sleep(10)
+            Titulo = WebDriverWait(driver, 20).until(
                 EC.element_to_be_clickable(
                     (
                         By.XPATH,
@@ -342,15 +344,15 @@ def find_voter(voter_id_value):
                     )
                 )
             )
+            time.sleep(10)
             Titulo.click()
         except Exception:
-            # print("Erro ao clicar no botão 'Consultar situação eleitoral':", str(e))
             return "IRREGULAR"
 
         # Aguardar o campo de número do eleitor aparecer e preenchê-lo
         try:
             time.sleep(3)
-            Numero_eleitor = WebDriverWait(driver, 10).until(
+            Numero_eleitor = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located(
                     (
                         By.XPATH,
@@ -364,16 +366,17 @@ def find_voter(voter_id_value):
             )
             time.sleep(3)
             Numero_eleitor.send_keys(voter_id_value)
+            time.sleep(3)
             Botao_verificacao.click()
             time.sleep(3)
         except Exception:
-            # print("Erro ao preencher o número do eleitor ou clicar no botão de verificação:", str(e))
+            print("Deu erro na verificação")
             return "IRREGULAR"
 
         # Verificar a situação da inscrição
         try:
-            time.sleep(10)
-            situacao_element = WebDriverWait(driver, 10).until(
+            # time.sleep(10)
+            situacao_element = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located(
                     (
                         By.XPATH,
@@ -389,7 +392,6 @@ def find_voter(voter_id_value):
             else:
                 return "IRREGULAR"
         except Exception:
-            # print("Falha ao verificar a situação da inscrição:", str(e))
             return "IRREGULAR"
 
     finally:
