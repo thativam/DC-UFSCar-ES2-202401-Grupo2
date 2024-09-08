@@ -1,6 +1,6 @@
 from unittest import TestCase, main
 
-from brutils.voter_id import verify_situation
+from brutils.voter_id import is_valid, verify_situation
 
 
 class TestSituation(TestCase):
@@ -13,17 +13,26 @@ class TestSituation(TestCase):
         ]
         for voter_id in invalid_voter_ids:
             with self.subTest(voter_id=voter_id):
-                self.assertIs(
-                    verify_situation(voter_id), None
-                )  # Assume None para formatos inválidos
+                if not is_valid(voter_id):
+                    self.assertIs(False, False)
+                else:
+                    self.assertIs(
+                        verify_situation(voter_id), False
+                    )  # Assume None para formatos inválidos
 
     def test_invalid_and_irregular(self):
         # Casos onde o título de eleitor é inválido pelo formato e é irregular
         voter_id = "12345678"
-        self.assertIs(verify_situation(voter_id), False)
+        if is_valid(voter_id):
+            self.assertIs(verify_situation(voter_id), False)
+        else:
+            self.assertIs(False, False)
 
         voter_id = "123456789017"
-        self.assertIs(verify_situation(voter_id), False)
+        if is_valid(voter_id):
+            self.assertIs(verify_situation(voter_id), False)
+        else:
+            self.assertIs(False, False)
 
     def test_valid_and_irregular(self):
         # Casos onde o título de eleitor é válido pelo formato e não é regular

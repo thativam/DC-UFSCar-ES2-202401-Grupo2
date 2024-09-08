@@ -1,4 +1,11 @@
+import time
 from random import randint
+
+import chromedriver_autoinstaller
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def is_valid(voter_id):  # type: (str) -> bool
@@ -294,9 +301,106 @@ def format_voter_id(voter_id):  # type: (str) -> str
     )
 
 
-def verify_situation(voter_id):
-    if is_valid(voter_id):
-        return False
+def find_voter(voter_id_value):
+    # Instalar o ChromeDriver automaticamente
+    chromedriver_autoinstaller.install()
 
-    else:
+    # Inicializar o WebDriver com o ChromeDriver
+    driver = webdriver.Chrome()
+
+    try:
+        # Navegar até a URL
+        driver.get(
+            "https://www.tse.jus.br/servicos-eleitorais/autoatendimento-eleitoral#/atendimento-eleitor"
+        )
+
+        # Aguardar até que a página esteja completamente carregada
+        WebDriverWait(driver, 10).until(
+            lambda driver: driver.execute_script("return document.readyState")
+            == "complete"
+        )
+
+        # Fechar o modal de cookies
+        try:
+            time.sleep(10)
+            cookie = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "/html/body/div[9]/div/div/div[2]/button")
+                )
+            )
+            time.sleep(10)
+            cookie.click()
+        except Exception:
+            return "IRREGULAR"
+
+        # Clicar no botão 'Consultar situação eleitoral'
+        try:
+            time.sleep(10)
+            Titulo = WebDriverWait(driver, 20).until(
+                EC.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        "//span[contains(text(),'Consultar situação eleitoral')]",
+                    )
+                )
+            )
+            time.sleep(10)
+            Titulo.click()
+        except Exception:
+            return "IRREGULAR"
+
+        # Aguardar o campo de número do eleitor aparecer e preenchê-lo
+        try:
+            time.sleep(3)
+            Numero_eleitor = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "/html/body/main/div/div/div[3]/div/div/app-root/app-modal-auth/div/div/div/div/div[2]/div[2]/form/div[1]/div/input",
+                    )
+                )
+            )
+            Botao_verificacao = driver.find_element(
+                By.XPATH,
+                "/html/body/main/div/div/div[3]/div/div/app-root/app-modal-auth/div/div/div/div/div[2]/div[2]/form/div[2]/button[2]",
+            )
+            time.sleep(3)
+            Numero_eleitor.send_keys(voter_id_value)
+            time.sleep(3)
+            Botao_verificacao.click()
+            time.sleep(3)
+        except Exception:
+            print("Deu erro na verificação")
+            return "IRREGULAR"
+
+        # Verificar a situação da inscrição
+        try:
+            # time.sleep(10)
+            situacao_element = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "/html/body/main/div/div/div[3]/div/div/app-root/div/app-consultar-situacao-titulo-eleitor/div[1]/div[1]/p/span",
+                    )
+                )
+            )
+            time.sleep(10)
+            situacao_texto = situacao_element.text
+
+            if "REGULAR" in situacao_texto:
+                return "REGULAR"
+            else:
+                return "IRREGULAR"
+        except Exception:
+            return "IRREGULAR"
+
+    finally:
+        # Certificar-se de fechar o navegador
+        driver.quit()
+
+
+def verify_situation(voter_id):
+    if find_voter(voter_id) == "REGULAR":
         return True
+    else:
+        return False
